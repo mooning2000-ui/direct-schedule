@@ -175,24 +175,41 @@
 </main><div class="live-badge">LIVE HTML</div>
         <script>
         (() => {
-          const initialVersion = "1790021510479208500";
-          const versionFile = "2026_2\ud559\uae30 \uc911\uac04\uace0\uc0ac_\uc9c1\ubcf4_\uc77c\uc815\ud45c.version";
+          const initialVersion = "1790025082134013300";
+          const versionFile = "version.txt";
+          const validVersion = /^[0-9]{10,30}$/;
           const key = 'esu-scroll-' + location.pathname;
+          const reloadKey = 'esu-reload-version-' + location.pathname;
+          const reloadAtKey = reloadKey + '-at';
           const saved = sessionStorage.getItem(key);
-          if (saved !== null) { requestAnimationFrame(() => window.scrollTo(0, Number(saved)||0)); sessionStorage.removeItem(key); }
+          if (saved !== null) {
+            requestAnimationFrame(() => window.scrollTo(0, Number(saved) || 0));
+            sessionStorage.removeItem(key);
+          }
           if (location.protocol === 'http:' || location.protocol === 'https:') {
             setInterval(async () => {
               try {
                 const r = await fetch(versionFile + '?t=' + Date.now(), {cache:'no-store'});
+                if (!r.ok) return;
                 const current = (await r.text()).trim();
+                // 404 HTML이나 오류문 전체를 버전값으로 오인하지 않도록 숫자 토큰만 허용한다.
+                if (!validVersion.test(current)) return;
                 if (current && current !== initialVersion) {
-                  sessionStorage.setItem(key, String(window.scrollY));
-                  const u = new URL(location.href);
-                  u.searchParams.set('_esu_v', current);
-                  location.replace(u.toString());
+                  const last = sessionStorage.getItem(reloadKey) || '';
+                  const lastAt = Number(sessionStorage.getItem(reloadAtKey) || 0);
+                  const now = Date.now();
+                  // Pages 배포 지연 중에도 URI가 계속 길어지지 않도록 고정 query key만 교체한다.
+                  if (last !== current || now - lastAt > 12000) {
+                    sessionStorage.setItem(key, String(window.scrollY));
+                    sessionStorage.setItem(reloadKey, current);
+                    sessionStorage.setItem(reloadAtKey, String(now));
+                    const u = new URL(location.href);
+                    u.searchParams.set('_esu_v', current);
+                    location.replace(u.toString());
+                  }
                 }
               } catch (_) {}
-            }, 1000);
+            }, 2500);
           }
         })();
         </script></body></html>
