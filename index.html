@@ -175,41 +175,55 @@
 </main><div class="live-badge">LIVE HTML</div>
         <script>
         (() => {
-          const initialVersion = "1790025082134013300";
+          const initialVersion = "1790025564105291700";
           const versionFile = "version.txt";
+          // v32.48: version.txt는 오직 10~30자리 숫자만 허용한다.
+          // HTML/404 문서가 잘못 반환돼도 URL에 절대 붙이지 않는다.
           const validVersion = /^[0-9]{10,30}$/;
           const key = 'esu-scroll-' + location.pathname;
           const reloadKey = 'esu-reload-version-' + location.pathname;
-          const reloadAtKey = reloadKey + '-at';
           const saved = sessionStorage.getItem(key);
           if (saved !== null) {
             requestAnimationFrame(() => window.scrollTo(0, Number(saved) || 0));
             sessionStorage.removeItem(key);
           }
+
+          // 과거 버전이 남긴 비정상 query가 우연히 로드된 경우에도 짧은 안전 URL로 정리한다.
+          try {
+            const q = new URL(location.href);
+            const legacy = q.searchParams.get('_esu_v');
+            if (legacy !== null && !validVersion.test(legacy)) {
+              q.search = '';
+              history.replaceState(null, '', q.pathname + q.hash);
+            }
+          } catch (_) {}
+
+          async function checkVersion() {
+            try {
+              const vf = new URL(versionFile, location.href);
+              vf.search = 't=' + Date.now();
+              const r = await fetch(vf.toString(), {cache:'no-store', redirect:'follow'});
+              if (!r.ok) return;
+              // 텍스트가 길면 읽고도 사용하지 않는다. URI 폭주를 이중 차단한다.
+              const raw = await r.text();
+              if (raw.length > 64) return;
+              const current = raw.trim();
+              if (!validVersion.test(current) || current === initialVersion) return;
+              const last = sessionStorage.getItem(reloadKey) || '';
+              if (last === current) return;
+              sessionStorage.setItem(key, String(window.scrollY));
+              sessionStorage.setItem(reloadKey, current);
+
+              // 현재 URL의 query를 재사용하지 않는다. 항상 짧은 새 URL을 직접 만든다.
+              // 따라서 어떤 응답이 와도 HTML 전체가 URI 뒤에 누적될 수 없다.
+              const clean = new URL(location.origin + location.pathname);
+              clean.searchParams.set('v', current);
+              location.replace(clean.toString());
+            } catch (_) {}
+          }
+
           if (location.protocol === 'http:' || location.protocol === 'https:') {
-            setInterval(async () => {
-              try {
-                const r = await fetch(versionFile + '?t=' + Date.now(), {cache:'no-store'});
-                if (!r.ok) return;
-                const current = (await r.text()).trim();
-                // 404 HTML이나 오류문 전체를 버전값으로 오인하지 않도록 숫자 토큰만 허용한다.
-                if (!validVersion.test(current)) return;
-                if (current && current !== initialVersion) {
-                  const last = sessionStorage.getItem(reloadKey) || '';
-                  const lastAt = Number(sessionStorage.getItem(reloadAtKey) || 0);
-                  const now = Date.now();
-                  // Pages 배포 지연 중에도 URI가 계속 길어지지 않도록 고정 query key만 교체한다.
-                  if (last !== current || now - lastAt > 12000) {
-                    sessionStorage.setItem(key, String(window.scrollY));
-                    sessionStorage.setItem(reloadKey, current);
-                    sessionStorage.setItem(reloadAtKey, String(now));
-                    const u = new URL(location.href);
-                    u.searchParams.set('_esu_v', current);
-                    location.replace(u.toString());
-                  }
-                }
-              } catch (_) {}
-            }, 2500);
+            setInterval(checkVersion, 3000);
           }
         })();
         </script></body></html>
