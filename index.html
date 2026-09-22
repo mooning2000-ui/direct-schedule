@@ -17,13 +17,13 @@
         .metric:first-child .metric-value{font-size:24px;color:#111827}.metric:last-child .metric-value{color:#d85e0b}
         .day-card{border:1px solid #bed9f5;border-radius:12px;overflow:hidden;margin:0 0 18px;background:#fff;box-shadow:0 3px 0 #e0e8f1;break-inside:avoid-page;page-break-inside:avoid}
         .day-head{height:48px;background:#e7f3ff;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 10px;border-bottom:1px solid #d4e4f3}
-        .day-title{font-size:19px;font-weight:800;color:#0d3265;display:flex;align-items:center;gap:9px}.mini-icon{width:30px;height:30px;border-radius:8px;background:#d6ebff;color:#1f66b6;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
-        .day-total{min-width:84px;text-align:center;background:#8dc2f4;color:#fff;font-weight:800;border-radius:7px;padding:7px 10px;font-size:13px}
+        .day-title{font-size:20px;font-weight:800;color:#0d3265;display:flex;align-items:center;gap:9px}.mini-icon{width:30px;height:30px;border-radius:8px;background:#d6ebff;color:#1f66b6;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+        .day-total{min-width:84px;text-align:center;background:#8dc2f4;color:#fff;font-weight:800;border-radius:7px;padding:7px 10px;font-size:14px}
         .schedule-table{width:100%;border-collapse:collapse;table-layout:fixed}
-        th{height:34px;background:#f0f6fc;color:#385a80;border:1px solid #d6e3f0;border-top:0;font-size:12px;font-weight:800}
-        td{border:1px solid #dce6f0;text-align:center;vertical-align:middle;padding:6px 7px;font-size:13px;line-height:1.35;color:#233c5b;background:#fff}
-        tbody tr.stripe-1 td:not(.school){background:#fcfdff}.school{font-size:16px;font-weight:800;color:#123a69;background:#f7fbff}.grade,.subject,.student,.total{font-weight:700}.subject{white-space:normal;word-break:keep-all}.total{color:#245a91;background:#f6fafe}
-        .status{display:inline-block;min-width:78px;border-radius:8px;padding:4px 8px;font-size:12px;font-weight:800}.status.assigned{background:#ddf7e7;color:#177a43}.status.unassigned{background:#fff0e1;color:#d46812}
+        th{height:34px;background:#f0f6fc;color:#385a80;border:1px solid #d6e3f0;border-top:0;font-size:13px;font-weight:800}
+        td{border:1px solid #dce6f0;text-align:center;vertical-align:middle;padding:6px 7px;font-size:14px;line-height:1.35;color:#233c5b;background:#fff}
+        tbody tr.stripe-1 td:not(.school){background:#fcfdff}.school{font-size:17px;font-weight:800;color:#123a69;background:#f7fbff}.grade,.subject,.student,.total{font-weight:700}.subject{white-space:normal;word-break:keep-all}.total{color:#245a91;background:#f6fafe}
+        .status{display:inline-block;min-width:78px;border-radius:8px;padding:4px 8px;font-size:13px;font-weight:800}.status.assigned{background:#ddf7e7;color:#177a43}.status.unassigned{background:#fff0e1;color:#d46812}
         .empty{border:1px solid #dbe7f3;border-radius:12px;background:#fbfdff;text-align:center;padding:70px 20px;color:#60748a;font-weight:700}
         .live-badge{position:fixed;right:14px;bottom:12px;background:#0d3265;color:#fff;padding:6px 9px;border-radius:7px;font-size:10px;opacity:.48;z-index:99}
         .cards-grid{display:block}
@@ -175,9 +175,9 @@
 </main><div class="live-badge">LIVE HTML</div>
         <script>
         (() => {
-          const initialVersion = "1790048389148802800";
+          const initialVersion = "1790048712595268700";
           const versionFile = "version.txt";
-          // v32.49: version.txt는 오직 10~30자리 숫자만 허용한다.
+          // v32.50: version.txt는 오직 10~30자리 숫자만 허용한다.
           // HTML/404 문서가 잘못 반환돼도 URL에 절대 붙이지 않는다.
           const validVersion = /^[0-9]{10,30}$/;
           const key = 'esu-scroll-' + location.pathname;
